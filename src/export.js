@@ -20,11 +20,13 @@ function rerender(mode) {
 	}
 
 	for (var i = 0; i < input_manager.stroke_history.length; i++) {
+		rawsvg += change_color(input_manager.stroke_history[i].color, mode)
 		for (var j = 0; j < input_manager.stroke_history[i].points.length; j++) {
 			var prevcoords = input_manager.stroke_history[i].points[j-1]
 			var coords = input_manager.stroke_history[i].points[j]
 			rawsvg += draw_segment(prevcoords, coords, input_manager.stroke_history[i].color, mode)
 		}
+		rawsvg += (mode === SVG_MODE) ? '</g>' : 0
 	}
 
 	return rawsvg

@@ -23,14 +23,17 @@ function draw_points_to_canvas() {
 }
 
 function draw_segment(pv, pt, color, mode) {
+	// Get the color change out of the way!
+	change_color(color, CANVAS_MODE)
+
 	// check for undefined
-	if (typeof pv === 'undefined') { return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, 1.6*SCALE_FACTOR, color, mode) }
+	if (typeof pv === 'undefined') { return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, 1.6*SCALE_FACTOR, mode) }
 
 	// check for singlepoint
 	if (pv[0] == pt[0] && pt[1] == pv[1]) return ''//false
 	
 	var jitter = 0.75
-	var radius = 1.6 // 0.1/24*768/2
+	var radius = 1.6 + pt[2] // 0.1/24*768/2
 	var distance_clicky = 1.2//2
 
 	var length = Math.sqrt(Math.pow(pt[0] - pv[0], 2) + Math.pow(pt[1] - pv[1], 2),2)
@@ -46,20 +49,29 @@ function draw_segment(pv, pt, color, mode) {
 	var resultant = ((mode == CANVAS_MODE) ? true : '')
 
 	for (var x = pv[0], y = pv[1];Math.sqrt(Math.pow(x - pv[0], 2) + Math.pow(y - pv[1], 2), 2) < length; x += vector[0], y += vector[1]) {
-		resultant += draw_single_point(x*SCALE_FACTOR, y*SCALE_FACTOR, radius*SCALE_FACTOR * ((Math.floor(Math.random() * 2)) ? jitter : 1), color, mode)
+		resultant += draw_single_point(x*SCALE_FACTOR, y*SCALE_FACTOR, radius*SCALE_FACTOR * ((Math.floor(Math.random() * 2)) ? jitter : 1), mode)
 	}
 
 	return resultant
 }
 
-function draw_single_point(x, y, r, color, mode) {
+function draw_single_point(x, y, r, mode) {
 		if (mode == CANVAS_MODE) {
 			context.beginPath()
-			context.fillStyle = color
 			context.arc(x, y, r, 0, TWOPI)
 			context.fill()
 			return 0
 		} else {
-			return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + color + '"/>'
+			return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>'
 		}
+}
+
+// Adding this so that svg export groups points by stroke
+function change_color(color, mode) {
+	if (mode === CANVAS_MODE) {
+		context.fillStyle = color
+		return 0
+	} else {
+		return '<g fill="' + color + '">'
+	}
 }

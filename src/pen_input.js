@@ -46,8 +46,12 @@ function end_drawing(e) {
 }
 
 function get_coordinates(e) {
-	//if (e.touches && e.touches[0] && typeof e.touches[0]["force"
-	return [e.pageX, e.pageY]
+	console.log(e)
+	if (typeof e.pressure !== 'undefined' && e.pointerType == 'pen') {
+		return [e.pageX, e.pageY, Math.max(0.1, e.pressure)]
+	} else {
+		return [e.pageX, e.pageY, 0]
+	}
 }
 
 do_when_not_busy = window.requestIdleClassback || function(fn) { setTimeout(fn, 1) }
