@@ -1,7 +1,8 @@
 var input_manager = {
 	currently_drawing: false,
 	points: [],
-	stroke_history: []
+	stroke_history: [],
+	color: 'rebeccapurple'
 }
 
 obscura.addEventListener('touchstart', begin_drawing)
@@ -39,7 +40,7 @@ obscura.addEventListener('touchleave', end_drawing)
 obscura.addEventListener('mouseup', end_drawing)
 function end_drawing(e) {
 	input_manager.currently_drawing = false
-	do_when_not_busy(() => { input_manager.stroke_history.push(input_manager.points); input_manager.points = [] })
+	do_when_not_busy(() => { input_manager.stroke_history.push({"color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
 }
 
 function get_coordinates(e) {

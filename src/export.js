@@ -1,15 +1,5 @@
 function export_as_svg() {
-	// Minimum Viable Product
-	var rawsvg = '<svg viewBox="0 0 ' + obscura.width + ' ' + obscura.height + '" xmlns="https://www.w3.org/2000/svg">'
-	// TODO: generalize the canvas drawing functions to take an etching function as argument, that way we can reuse it here for the export with a different etcher
-	for (var i = 0; i < input_manager.stroke_history.length; i++) {
-		for (var j = 0; j < input_manager.stroke_history[i].length; j++) {
-			var coords = input_manager.stroke_history[i][j]
-			rawsvg += '<rect x="' + coords[0] + '" y="' + coords[1] + '" width="10" height="10" />'
-		}
-	}
-	rawsvg += '</svg>'
-
+	var rawsvg = '<svg viewBox="0 0 ' + obscura.width + ' ' + obscura.height + '" xmlns="http://www.w3.org/2000/svg">' + rerender(SVG_MODE) + '</svg>'
 	download(rawsvg, 'image/svg+xml', 'myimage.svg')
 }
 
@@ -20,4 +10,23 @@ function download(data, mime, name) {
 	a.setAttribute('href', url)
 	a.setAttribute('download', name)
 	a.click()
+}
+
+function rerender(mode) {
+	var rawsvg = ((mode === CANVAS_MODE) ? 0 : '')
+
+	if (mode === CANVAS_MODE) {
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+	}
+
+	for (var i = 0; i < input_manager.stroke_history.length; i++) {
+		for (var j = 0; j < input_manager.stroke_history[i].points.length; j++) {
+			var prevcoords = input_manager.stroke_history[i].points[j-1]
+			var coords = input_manager.stroke_history[i].points[j]
+			rawsvg += draw_segment(prevcoords, coords, input_manager.stroke_history[i].color, mode)
+		}
+	}
+
+	return rawsvg
+	
 }
