@@ -8,7 +8,7 @@
 #sidebar_toggle { display: none; }
 body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; left: 0; overflow: hidden; margin: 0; }
 #obscura { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
-#sidepanel { position: absolute; right: -350px; width: 350px; height: 100%; z-index: 1; border-left: 1px solid #999; background: #eee;}
+#sidepanel { position: absolute; right: -300px; width: 300px; height: 100%; z-index: 1; border-left: 1px solid #999; background: #eee;}
 #sidebar_button { position: absolute; right: 100%; height: top: 0px; background: #999; writing-mode: vertical-rl; padding: 3px; }
 #sidebar_toggle:checked ~ #sidepanel { right: 0px; }
 </style>
@@ -18,13 +18,14 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 
 <div id="sidepanel"><label for="sidebar_toggle" id="sidebar_button">Toolbar&nbsp;&#8599;</label>
 <button onclick="export_as_svg()">Export SVG</button><button onclick="rerender(CANVAS_MODE)">Rerender</button>
+<button onclick="undo()">Undo&nbsp;&olarr;</button><button onclick="redo()">Redo&nbsp;&orarr;</button>
 </div>
 <canvas id="obscura"></canvas>
 <script src="src/pen_input.js"></script>
 <script src="src/draw.js"></script>
 <script src="src/export.js"></script>
 <script>
-version = '0.0.1'
+version = '0.0.2'
 document.title = 'reneeverly sketch-tool v' + version
 </script>
 </body>

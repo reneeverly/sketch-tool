@@ -53,7 +53,6 @@ function draw_segment(pv, pt, color, mode) {
 }
 
 function draw_single_point(x, y, r, color, mode) {
-		console.log(mode)
 		if (mode == CANVAS_MODE) {
 			context.beginPath()
 			context.fillStyle = color
