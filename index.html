@@ -17,14 +17,14 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 <input type="checkbox" id="sidebar_toggle"></input>
 
 <div id="sidepanel"><label for="sidebar_toggle" id="sidebar_button">Toolbar&nbsp;&#8599;</label>
-<button onclick="export_as_svg()">Export SVG</button>
+<button onclick="export_as_svg()">Export SVG</button><button onclick="rerender(CANVAS_MODE)">Rerender</button>
 </div>
 <canvas id="obscura"></canvas>
 <script src="src/pen_input.js"></script>
 <script src="src/draw.js"></script>
 <script src="src/export.js"></script>
 <script>
-version = '0.0.0'
+version = '0.0.1'
 document.title = 'reneeverly sketch-tool v' + version
 </script>
 </body>
