@@ -6,24 +6,117 @@
 <style>
 * { box-sizing: border-box; }
 #sidebar_toggle { display: none; }
-body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; left: 0; overflow: hidden; margin: 0; }
+body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; left: 0; overflow: hidden; margin: 0; font-family: sans-serif; }
 #obscura { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
 #sidepanel { position: absolute; right: -300px; width: 300px; height: 100%; z-index: 1; border-left: 1px solid #999; background: #eee;}
 #sidebar_button { position: absolute; right: 100%; height: top: 0px; background: #999; writing-mode: vertical-rl; padding: 3px; }
 #sidebar_toggle:checked ~ #sidepanel { right: 0px; }
+
+.behind { z-index: -1; }
+#color_square { position: absolute; top: 80px; left: 80px; display: none; }
 </style>
 </head>
 <body>
-<input type="checkbox" id="sidebar_toggle"></input>
+<input type="checkbox" id="sidebar_toggle" checked></input>
 
 <div id="sidepanel"><label for="sidebar_toggle" id="sidebar_button">Toolbar&nbsp;&#8599;</label>
 <button onclick="export_as_svg()">Export SVG</button><button onclick="rerender(CANVAS_MODE)">Rerender</button>
 <button onclick="undo()">Undo&nbsp;&olarr;</button><button onclick="redo()">Redo&nbsp;&orarr;</button>
+
+<div style="position: relative;">
+<canvas id="color_square" width="140" height="140" style="top: 80px; left: 80px; position: absolute;"></canvas>
+
+<!-- https://codepen.io/philipnrmn/pen/mOVMOd -->
+<svg viewBox="-50 -50 500 500" class="card color-picker" id="hue_wheel">
+<defs>
+<mask id="doughnut">
+<circle cx="200"
+cy="200"
+r="190"
+stroke="white" stroke-width="40"></circle>
+</mask>
+<linearGradient id="red-to-yellow">
+<stop offset="0.1" stop-color="red"></stop>
+<stop offset="0.9" stop-color="yellow"></stop>
+</linearGradient>
+<linearGradient id="yellow-to-lime">
+<stop offset="0.1" stop-color="yellow"></stop>
+<stop offset="0.9" stop-color="lime"></stop>
+</linearGradient>
+<linearGradient id="lime-to-aqua">
+<stop offset="0.1" stop-color="lime"></stop>
+<stop offset="0.9" stop-color="aqua"></stop>
+</linearGradient>
+<linearGradient id="aqua-to-blue">
+<stop offset="0.1" stop-color="aqua"></stop>
+<stop offset="0.9" stop-color="blue"></stop>
+</linearGradient>
+<linearGradient id="blue-to-magenta">
+<stop offset="0.1" stop-color="blue"></stop>
+<stop offset="0.9" stop-color="magenta"></stop>
+</linearGradient>
+<linearGradient id="magenta-to-red">
+<stop offset="0.1" stop-color="magenta"></stop>
+<stop offset="0.9" stop-color="red"></stop>
+</linearGradient>
+</defs>
+<g mask="url(#doughnut)">
+<path d="M 200 0
+A 200 200, 0, 0, 1, 373.2 100
+L 200 200
+Z"
+fill="url(#red-to-yellow)"></path>
+<path d="M 200 0
+         A 200 200, 0, 0, 1, 373.2 100
+         L 200 200
+         Z"
+      transform="rotate(60 200 200)"
+      fill="url(#yellow-to-lime)"></path>
+<path d="M 200 0
+         A 200 200, 0, 0, 1, 373.2 100
+         L 200 200
+         Z"
+      transform="rotate(120 200 200)"
+      fill="url(#lime-to-aqua)"></path>
+<path d="M 200 0
+         A 200 200, 0, 0, 1, 373.2 100
+         L 200 200
+         Z"
+      transform="rotate(180 200 200)"
+      fill="url(#aqua-to-blue)"></path>
+<path d="M 200 0
+         A 200 200, 0, 0, 1, 373.2 100
+         L 200 200
+         Z"
+      transform="rotate(240 200 200)"
+      fill="url(#blue-to-magenta)"></path>
+<path d="M 200 0
+         A 200 200, 0, 0, 1, 373.2 100
+         L 200 200
+         Z"
+      transform="rotate(300 200 200)"
+      fill="url(#magenta-to-red)"></path>
+</g>
+	<g>
+		<circle cx="200" id="hue_selector"
+			cy="0"
+			r="12"
+			fill="red"
+			class="selector"
+			stroke="black" stroke-width="4" />
+	</g>
+</svg>
+</div>
+<span>Brushes:</span>
+
 </div>
 <canvas id="obscura"></canvas>
+
 <script src="src/pen_input.js"></script>
 <script src="src/draw.js"></script>
 <script src="src/export.js"></script>
+<script src="lib/okhsv.js"></script>
+<script src="src/color_selector.js"></script>
 <script>
 version = '0.0.2'
 document.title = 'reneeverly sketch-tool v' + version

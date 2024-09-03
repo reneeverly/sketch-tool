@@ -36,13 +36,19 @@ function new_points(e) {
 	draw_points_to_canvas()
 }
 
+// Generalize pointer up function
 obscura.addEventListener('touchend', end_drawing)
 obscura.addEventListener('touchleave', end_drawing)
-obscura.addEventListener('mouseup', end_drawing)
+document.addEventListener('mouseup', end_drawing)
 function end_drawing(e) {
-	input_manager.currently_drawing = false
-	input_manager.stroke_redo = []
-	do_when_not_busy(() => { input_manager.stroke_history.push({"color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
+	if (input_manager.currently_drawing) {
+		input_manager.currently_drawing = false
+		input_manager.stroke_redo = []
+		do_when_not_busy(() => { input_manager.stroke_history.push({"color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
+	}
+	if (currently_hue_selecting) {
+		onSVGMouseUp()
+	}
 }
 
 function get_coordinates(e) {
