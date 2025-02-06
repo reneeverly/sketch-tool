@@ -46,9 +46,9 @@ function end_drawing(e) {
 		input_manager.stroke_redo = []
 		do_when_not_busy(() => { input_manager.stroke_history.push({"color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
 	}
-	if (currently_hue_selecting) {
+	/*if (currently_hue_selecting) {
 		onSVGMouseUp()
-	}
+	}*/
 }
 
 function get_coordinates(e) {
