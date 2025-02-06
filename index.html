@@ -20,6 +20,8 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 #color_previous { height: 24px; background: #eee; width: 50%; display: inline-block; }
 #previous_colors_collection { min-height: 48px; }
 #previous_colors_collection div { height: 24px; width: 24px; display: inline-block; }
+
+#brush_box { max-height: 300px; overflow:scroll; }
 </style>
 </head>
 <body>
@@ -42,7 +44,9 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 <p>Color selection is confirmed when left side color bar is clicked on.</p>
 
 </div>
-<span>Brushes:</span>
+<h2>Brushes</h2>
+<div id="brush_box">
+</div>
 
 </div>
 <canvas id="obscura"></canvas>

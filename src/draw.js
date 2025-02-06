@@ -8,11 +8,12 @@ var TWOPI = 2 * Math.PI
 
 var POINT_SHAPE_CIRCLE = 0
 var POINT_SHAPE_RECT = 1
+var POINT_SHAPE_PATH = 2
 
 var pens = [
-	{"name": "Crayon", "jitter": 0.75, "initial_size": 1.6, "move_distance": 1.2, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Pen", "jitter": 1, "initial_size": 2, "move_distance": 0.5, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Square Brush", "jitter": 1, "initial_size": 5, "move_distance": 0.5, "shape": POINT_SHAPE_RECT}
+	{"name": "Crayon", "jitter": 0.75, "initial_size": 1.6, "spacing": 0.75, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Pen", "jitter": 1, "initial_size": 2, "spacing": 0.25, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Square Brush", "jitter": 1, "initial_size": 5, "spacing": 0.1, "shape": POINT_SHAPE_RECT}
 	]
 
 function draw_points_to_canvas() {
@@ -24,18 +25,16 @@ function draw_points_to_canvas() {
 	context.fillStyle = input_manager.color
 	//if (input_manager.points.length > 1) {
 		var pv = input_manager.points[input_manager.points.length - 2]
-		draw_segment(pv, pt, input_manager.color, CANVAS_MODE)
+		draw_segment(pv, pt, input_manager.color, input_manager.pen_number, CANVAS_MODE)
 	//}
 	//context.beginPath()
 	//context.arc(pt[0], pt[1], 2.5, 0, 2 * Math.PI)
 	//context.fill()
 }
 
-function draw_segment(pv, pt, color, mode) {
+function draw_segment(pv, pt, color, pen_number, mode) {
 	// Get the color change out of the way!
 	change_color(color, CANVAS_MODE)
-
-	var pen_number = 2
 
 	// check for undefined
 	if (typeof pv === 'undefined') { return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, pens[pen_number].initial_size*SCALE_FACTOR, shape, mode) }
@@ -46,7 +45,7 @@ function draw_segment(pv, pt, color, mode) {
 	var jitter = pens[pen_number].jitter
 	var shape = pens[pen_number].shape
 	var radius = pens[pen_number].initial_size * (1 + pv[2]) // 0.1/24*768/2
-	var distance_clicky = pens[pen_number].move_distance
+	var distance_clicky = pens[pen_number].spacing * radius
 
 	var length = Math.sqrt(Math.pow(pt[0] - pv[0], 2) + Math.pow(pt[1] - pv[1], 2),2)
 
@@ -89,6 +88,15 @@ function draw_single_point(x, y, r, shape, mode) {
 				return '<rect x="' + (x-r/2) + '" y="' + (y-r/2) + '" width="' + r + '" height="' + r + '"/>'
 			}
 			break
+		case(POINT_SHAPE_PATH):
+			debugger
+			if (mode == CANVAS_MODE) {
+			} else {
+			}
+			break
+		default:
+			console.warn('Brush point type was not recognized.')
+			break
 	}
 }
 
@@ -101,3 +109,9 @@ function change_color(color, mode) {
 		return '<g fill="' + color + '">'
 	}
 }
+
+/* Initialization of Interface */
+function add_brushes_to_brush_box() {
+	brush_box.innerHTML = pens.map((a,i)=>'<button onclick="input_manager.pen_number = ' + i + '">' + a.name + '</button>').join('<br>')
+}
+add_brushes_to_brush_box()

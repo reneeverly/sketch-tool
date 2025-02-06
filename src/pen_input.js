@@ -3,7 +3,8 @@ var input_manager = {
 	points: [],
 	stroke_history: [],
 	stroke_redo: [],
-	color: 'rebeccapurple'
+	color: 'rebeccapurple',
+	pen_number: 0
 }
 
 obscura.addEventListener('touchstart', begin_drawing)
@@ -44,7 +45,7 @@ function end_drawing(e) {
 	if (input_manager.currently_drawing) {
 		input_manager.currently_drawing = false
 		input_manager.stroke_redo = []
-		do_when_not_busy(() => { input_manager.stroke_history.push({"color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
+		do_when_not_busy(() => { input_manager.stroke_history.push({"pen_number": input_manager.pen_number, "color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
 	}
 	/*if (currently_hue_selecting) {
 		onSVGMouseUp()
@@ -52,7 +53,7 @@ function end_drawing(e) {
 }
 
 function get_coordinates(e) {
-	console.log(e)
+	//console.log(e)
 	if (typeof e.pressure !== 'undefined' && e.pointerType == 'pen') {
 		return [e.pageX, e.pageY, Math.max(0.1, e.pressure)]
 	} else {

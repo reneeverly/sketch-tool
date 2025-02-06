@@ -24,7 +24,7 @@ function rerender(mode) {
 		for (var j = 0; j < input_manager.stroke_history[i].points.length; j++) {
 			var prevcoords = input_manager.stroke_history[i].points[j-1]
 			var coords = input_manager.stroke_history[i].points[j]
-			rawsvg += draw_segment(prevcoords, coords, input_manager.stroke_history[i].color, mode)
+			rawsvg += draw_segment(prevcoords, coords, input_manager.stroke_history[i].color, input_manager.stroke_history[i].pen_number, mode)
 		}
 		rawsvg += (mode === SVG_MODE) ? '</g>' : 0
 	}
