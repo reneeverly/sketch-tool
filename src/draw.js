@@ -11,9 +11,9 @@ var POINT_SHAPE_RECT = 1
 var POINT_SHAPE_PATH = 2
 
 var pens = [
-	{"name": "Crayon", "jitter": 0.75, "initial_size": 1.6, "spacing": 0.75, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Pen", "jitter": 1, "initial_size": 2, "spacing": 0.25, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Square Brush", "jitter": 1, "initial_size": 5, "spacing": 0.1, "shape": POINT_SHAPE_RECT}
+	{"name": "Crayon", "jitter": 0.75, "initial_size": 1.6, "spacing": 0.375, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Pen", "jitter": 1, "initial_size": 2, "spacing": 0.125, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Square Brush", "jitter": 1, "initial_size": 5, "spacing": 0.05, "shape": POINT_SHAPE_RECT}
 	]
 
 function draw_points_to_canvas() {
@@ -45,7 +45,7 @@ function draw_segment(pv, pt, color, pen_number, mode) {
 	var jitter = pens[pen_number].jitter
 	var shape = pens[pen_number].shape
 	var radius = pens[pen_number].initial_size * (1 + pv[2]) // 0.1/24*768/2
-	var distance_clicky = pens[pen_number].spacing * radius
+	var distance_clicky = pens[pen_number].spacing * radius * 2
 
 	var length = Math.sqrt(Math.pow(pt[0] - pv[0], 2) + Math.pow(pt[1] - pv[1], 2),2)
 
