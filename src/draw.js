@@ -12,8 +12,8 @@ var POINT_SHAPE_PATH = 2
 
 var pens = [
 	{"name": "Crayon", "jitter": 0.75, "initial_size": 1.6, "spacing": 0.375, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Pen", "jitter": 1, "initial_size": 2, "spacing": 0.125, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Square Brush", "jitter": 1, "initial_size": 5, "spacing": 0.05, "shape": POINT_SHAPE_RECT}
+	{"name": "Pen", "jitter": 1, "initial_size": 1.6, "spacing": 0.125, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Square Brush", "jitter": 1, "initial_size": 1.6, "spacing": 0.05, "shape": POINT_SHAPE_RECT}
 	]
 
 function draw_points_to_canvas() {
@@ -25,26 +25,29 @@ function draw_points_to_canvas() {
 	context.fillStyle = input_manager.color
 	//if (input_manager.points.length > 1) {
 		var pv = input_manager.points[input_manager.points.length - 2]
-		draw_segment(pv, pt, input_manager.color, input_manager.pen_number, CANVAS_MODE)
+		draw_segment(pv, pt, input_manager.color, input_manager.size, input_manager.pen_number, CANVAS_MODE)
 	//}
 	//context.beginPath()
 	//context.arc(pt[0], pt[1], 2.5, 0, 2 * Math.PI)
 	//context.fill()
 }
 
-function draw_segment(pv, pt, color, pen_number, mode) {
+function draw_segment(pv, pt, color, size, pen_number, mode) {
 	// Get the color change out of the way!
 	change_color(color, CANVAS_MODE)
 
+	var shape = pens[pen_number].shape
+
 	// check for undefined
-	if (typeof pv === 'undefined') { return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, pens[pen_number].initial_size*SCALE_FACTOR, shape, mode) }
+	if (typeof pv === 'undefined') { 
+		return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, size*SCALE_FACTOR, shape, mode)
+	}
 
 	// check for singlepoint
 	if (pv[0] == pt[0] && pt[1] == pv[1]) return ''//false
 	
 	var jitter = pens[pen_number].jitter
-	var shape = pens[pen_number].shape
-	var radius = pens[pen_number].initial_size * (1 + pv[2]) // 0.1/24*768/2
+	var radius = size * (1 + pv[2]) // 0.1/24*768/2
 	var distance_clicky = pens[pen_number].spacing * radius * 2
 
 	var length = Math.sqrt(Math.pow(pt[0] - pv[0], 2) + Math.pow(pt[1] - pv[1], 2),2)
@@ -82,10 +85,10 @@ function draw_single_point(x, y, r, shape, mode) {
 			break
 		case(POINT_SHAPE_RECT):
 			if (mode == CANVAS_MODE) {
-				context.fillRect(x-r/2, y-r/2, r, r)
+				context.fillRect(x-r, y-r, r*2, r*2)
 			} else {
 				if (r == 0) return ''
-				return '<rect x="' + (x-r/2) + '" y="' + (y-r/2) + '" width="' + r + '" height="' + r + '"/>'
+				return '<rect x="' + (x-r) + '" y="' + (y-r) + '" width="' + (r*2) + '" height="' + (r*2) + '"/>'
 			}
 			break
 		case(POINT_SHAPE_PATH):
@@ -95,7 +98,7 @@ function draw_single_point(x, y, r, shape, mode) {
 			}
 			break
 		default:
-			console.warn('Brush point type was not recognized.')
+			console.warn('Brush point type was not recognized:', shape)
 			break
 	}
 }

@@ -48,6 +48,10 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 <h2>Brushes</h2>
 <div id="brush_box">
 </div>
+<!--<button onclick="displayBrushOpenDialog()">Upload Brush...</button>-->
+
+<h2>Brush Size</h2>
+<input value="1.6" step="0.2" "min="0.8" max="64" type="number" onchange="input_manager.size = this.value"></input>
 
 </div></div>
 <canvas id="obscura"></canvas>
@@ -55,10 +59,11 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 <script src="src/pen_input.js"></script>
 <script src="src/draw.js"></script>
 <script src="src/export.js"></script>
-<script src="lib/okhsv.js"></script>
 <script src="lib/hsv_picker.js"></script>
+<script src="lib/imagetracer_v1.2.6.js"></script>
+<script src="src/addons/abr.js"></script>
 <script>
-version = '0.0.2'
+version = '0.0.3'
 document.title = 'reneeverly sketch-tool v' + version
 </script>
 </body>
