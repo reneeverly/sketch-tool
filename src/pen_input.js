@@ -55,10 +55,11 @@ function end_drawing(e) {
 
 function get_coordinates(e) {
 	//console.log(e)
+	var b = obscura.getBoundingClientRect()
 	if (typeof e.pressure !== 'undefined' && e.pointerType == 'pen') {
-		return [e.pageX, e.pageY, Math.max(0.1, e.pressure)]
+		return [e.clientX - b.x, e.clientY - b.y, Math.max(0.1, e.pressure)]
 	} else {
-		return [e.pageX, e.pageY, 0]
+		return [e.clientX - b.x, e.clientY - b.y, 0]
 	}
 }
 

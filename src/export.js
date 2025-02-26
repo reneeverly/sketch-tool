@@ -1,5 +1,5 @@
 function export_as_svg() {
-	var rawsvg = '<svg viewBox="0 0 ' + obscura.width + ' ' + obscura.height + '" xmlns="http://www.w3.org/2000/svg">' + rerender(SVG_MODE) + '</svg>'
+	var rawsvg = '<svg viewBox="0 0 ' + obscura.width + ' ' + obscura.height + '" xmlns="http://www.w3.org/2000/svg">' + path_to_symbol(3) + rerender(SVG_MODE) + '</svg>'
 	download(rawsvg, 'image/svg+xml', 'myimage.svg')
 }
 
@@ -31,4 +31,8 @@ function rerender(mode) {
 
 	return rawsvg
 	
+}
+
+function path_to_symbol(pen_index) {
+	return '<symbol id="' + pens[pen_index].name + '" width="' + pens[pen_index].viewBox + '" height="' + pens[pen_index].viewBox + '" viewBox="0 0 ' + pens[pen_index].viewBox + ' ' + pens[pen_index].viewBox + '"><path d="' + pens[pen_index].path + '"></path></symbol>'
 }
