@@ -9,6 +9,7 @@
 body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; left: 0; overflow: hidden; margin: 0; font-family: sans-serif; }
 #obscura { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
 #sidepanel { position: absolute; right: -300px; width: 300px; height: 100%; z-index: 1; border-left: 1px solid #999; background: #eee;}
+#sidepanel_contents { height: 100%; overflow-y: scroll; }
 #sidebar_button { position: absolute; right: 100%; height: top: 0px; background: #999; writing-mode: vertical-rl; padding: 3px; }
 #sidebar_toggle:checked ~ #sidepanel { right: 0px; }
 
@@ -27,7 +28,7 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 <body>
 <input type="checkbox" id="sidebar_toggle" checked></input>
 
-<div id="sidepanel"><label for="sidebar_toggle" id="sidebar_button">Toolbar&nbsp;&#8599;</label>
+<div id="sidepanel"><label for="sidebar_toggle" id="sidebar_button">Toolbar&nbsp;&#8599;</label><div id="sidepanel_contents">
 <button onclick="export_as_svg()">Export SVG</button><button onclick="rerender(CANVAS_MODE)">Rerender</button>
 <button onclick="undo()">Undo&nbsp;&olarr;</button><button onclick="redo()">Redo&nbsp;&orarr;</button>
 
@@ -47,17 +48,22 @@ body, html { position: absolute; width: 100%; height: 100%; padding: 0; top: 0; 
 <h2>Brushes</h2>
 <div id="brush_box">
 </div>
+<!--<button onclick="displayBrushOpenDialog()">Upload Brush...</button>-->
 
-</div>
+<h2>Brush Size</h2>
+<input value="1.6" step="0.2" "min="0.8" max="64" type="number" onchange="input_manager.size = this.value"></input>
+
+</div></div>
 <canvas id="obscura"></canvas>
 
 <script src="src/pen_input.js"></script>
 <script src="src/draw.js"></script>
 <script src="src/export.js"></script>
-<script src="lib/okhsv.js"></script>
 <script src="lib/hsv_picker.js"></script>
+<script src="lib/imagetracer_v1.2.6.js"></script>
+<script src="src/addons/abr.js"></script>
 <script>
-version = '0.0.2'
+version = '0.0.3'
 document.title = 'reneeverly sketch-tool v' + version
 </script>
 </body>

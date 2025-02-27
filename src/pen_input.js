@@ -4,6 +4,7 @@ var input_manager = {
 	stroke_history: [],
 	stroke_redo: [],
 	color: 'rebeccapurple',
+	size: 1.6,
 	pen_number: 0
 }
 
@@ -45,7 +46,7 @@ function end_drawing(e) {
 	if (input_manager.currently_drawing) {
 		input_manager.currently_drawing = false
 		input_manager.stroke_redo = []
-		do_when_not_busy(() => { input_manager.stroke_history.push({"pen_number": input_manager.pen_number, "color":input_manager.color, "points":input_manager.points}); input_manager.points = [] })
+		do_when_not_busy(() => { input_manager.stroke_history.push({"pen_number": input_manager.pen_number, "color":input_manager.color, "size": input_manager.size, "points":input_manager.points}); input_manager.points = [] })
 	}
 	/*if (currently_hue_selecting) {
 		onSVGMouseUp()
@@ -54,10 +55,11 @@ function end_drawing(e) {
 
 function get_coordinates(e) {
 	//console.log(e)
+	var b = obscura.getBoundingClientRect()
 	if (typeof e.pressure !== 'undefined' && e.pointerType == 'pen') {
-		return [e.pageX, e.pageY, Math.max(0.1, e.pressure)]
+		return [e.clientX - b.x, e.clientY - b.y, Math.max(0.1, e.pressure)]
 	} else {
-		return [e.pageX, e.pageY, 0]
+		return [e.clientX - b.x, e.clientY - b.y, 0]
 	}
 }
 

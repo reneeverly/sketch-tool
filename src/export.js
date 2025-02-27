@@ -1,5 +1,5 @@
 function export_as_svg() {
-	var rawsvg = '<svg viewBox="0 0 ' + obscura.width + ' ' + obscura.height + '" xmlns="http://www.w3.org/2000/svg">' + rerender(SVG_MODE) + '</svg>'
+	var rawsvg = '<svg viewBox="0 0 ' + obscura.width + ' ' + obscura.height + '" xmlns="http://www.w3.org/2000/svg">' + path_to_symbol(3) + rerender(SVG_MODE) + '</svg>'
 	download(rawsvg, 'image/svg+xml', 'myimage.svg')
 }
 
@@ -24,11 +24,15 @@ function rerender(mode) {
 		for (var j = 0; j < input_manager.stroke_history[i].points.length; j++) {
 			var prevcoords = input_manager.stroke_history[i].points[j-1]
 			var coords = input_manager.stroke_history[i].points[j]
-			rawsvg += draw_segment(prevcoords, coords, input_manager.stroke_history[i].color, input_manager.stroke_history[i].pen_number, mode)
+			rawsvg += draw_segment(prevcoords, coords, input_manager.stroke_history[i].color, input_manager.stroke_history[i].size, input_manager.stroke_history[i].pen_number, mode)
 		}
 		rawsvg += (mode === SVG_MODE) ? '</g>' : 0
 	}
 
 	return rawsvg
 	
+}
+
+function path_to_symbol(pen_index) {
+	return '<symbol id="' + pens[pen_index].name + '" width="' + pens[pen_index].viewBox + '" height="' + pens[pen_index].viewBox + '" viewBox="0 0 ' + pens[pen_index].viewBox + ' ' + pens[pen_index].viewBox + '"><path d="' + pens[pen_index].path + '"></path></symbol>'
 }

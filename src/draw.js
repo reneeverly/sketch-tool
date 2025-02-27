@@ -11,9 +11,10 @@ var POINT_SHAPE_RECT = 1
 var POINT_SHAPE_PATH = 2
 
 var pens = [
-	{"name": "Crayon", "jitter": 0.75, "initial_size": 1.6, "spacing": 0.75, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Pen", "jitter": 1, "initial_size": 2, "spacing": 0.25, "shape": POINT_SHAPE_CIRCLE},
-	{"name": "Square Brush", "jitter": 1, "initial_size": 5, "spacing": 0.1, "shape": POINT_SHAPE_RECT}
+	{"name": "Crayon", "jitter": 0.75, "spacing": 0.375, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Pen", "jitter": 1, "spacing": 0.125, "shape": POINT_SHAPE_CIRCLE},
+	{"name": "Square Brush", "jitter": 1, "spacing": 0.05, "shape": POINT_SHAPE_RECT},
+	{"name": "Feathered Pen", "jitter": 1, "viewBox": 24, "spacing": 15/24, "shape": POINT_SHAPE_PATH, "path": "M9 18c6.218 0 10.5 -3.288 11 -12v-2h-4.014c-9 0 -11.986 4 -12 9c0 1 0 3 2 5h3"}
 	]
 
 function draw_points_to_canvas() {
@@ -25,27 +26,30 @@ function draw_points_to_canvas() {
 	context.fillStyle = input_manager.color
 	//if (input_manager.points.length > 1) {
 		var pv = input_manager.points[input_manager.points.length - 2]
-		draw_segment(pv, pt, input_manager.color, input_manager.pen_number, CANVAS_MODE)
+		draw_segment(pv, pt, input_manager.color, input_manager.size, input_manager.pen_number, CANVAS_MODE)
 	//}
 	//context.beginPath()
 	//context.arc(pt[0], pt[1], 2.5, 0, 2 * Math.PI)
 	//context.fill()
 }
 
-function draw_segment(pv, pt, color, pen_number, mode) {
+function draw_segment(pv, pt, color, size, pen_number, mode) {
 	// Get the color change out of the way!
 	change_color(color, CANVAS_MODE)
 
+	var shape = pens[pen_number].shape
+
 	// check for undefined
-	if (typeof pv === 'undefined') { return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, pens[pen_number].initial_size*SCALE_FACTOR, shape, mode) }
+	if (typeof pv === 'undefined') { 
+		return draw_single_point(pt[0]*SCALE_FACTOR, pt[1]*SCALE_FACTOR, size*SCALE_FACTOR, shape, mode, pen_number)
+	}
 
 	// check for singlepoint
 	if (pv[0] == pt[0] && pt[1] == pv[1]) return ''//false
 	
 	var jitter = pens[pen_number].jitter
-	var shape = pens[pen_number].shape
-	var radius = pens[pen_number].initial_size * (1 + pv[2]) // 0.1/24*768/2
-	var distance_clicky = pens[pen_number].spacing * radius
+	var radius = size * (1 + pv[2]) // 0.1/24*768/2
+	var distance_clicky = pens[pen_number].spacing * radius * 2
 
 	var length = Math.sqrt(Math.pow(pt[0] - pv[0], 2) + Math.pow(pt[1] - pv[1], 2),2)
 
@@ -62,13 +66,13 @@ function draw_segment(pv, pt, color, pen_number, mode) {
 	var resultant = ((mode == CANVAS_MODE) ? true : '')
 
 	for (var x = pv[0], y = pv[1];Math.sqrt(Math.pow(x - pv[0], 2) + Math.pow(y - pv[1], 2), 2) < length; x += vector[0], y += vector[1]) {
-		resultant += draw_single_point(x*SCALE_FACTOR, y*SCALE_FACTOR, radius*SCALE_FACTOR * ((Math.floor(Math.random() * 2)) ? jitter : 1), shape, mode)
+		resultant += draw_single_point(x*SCALE_FACTOR, y*SCALE_FACTOR, radius*SCALE_FACTOR * ((Math.floor(Math.random() * 2)) ? jitter : 1), shape, mode, pen_number)
 	}
 
 	return resultant
 }
 
-function draw_single_point(x, y, r, shape, mode) {
+function draw_single_point(x, y, r, shape, mode, pen_index) {
 	switch(shape) {
 		case(POINT_SHAPE_CIRCLE):
 			if (mode == CANVAS_MODE) {
@@ -82,20 +86,28 @@ function draw_single_point(x, y, r, shape, mode) {
 			break
 		case(POINT_SHAPE_RECT):
 			if (mode == CANVAS_MODE) {
-				context.fillRect(x-r/2, y-r/2, r, r)
+				context.fillRect(x-r, y-r, r*2, r*2)
 			} else {
 				if (r == 0) return ''
-				return '<rect x="' + (x-r/2) + '" y="' + (y-r/2) + '" width="' + r + '" height="' + r + '"/>'
+				return '<rect x="' + (x-r) + '" y="' + (y-r) + '" width="' + (r*2) + '" height="' + (r*2) + '"/>'
 			}
 			break
 		case(POINT_SHAPE_PATH):
-			debugger
 			if (mode == CANVAS_MODE) {
+				context.save()
+				context.translate(x-r/2, y-r/2)
+				context.rotate(Math.random() * 360 * Math.PI / 180)
+				context.scale(SCALE_FACTOR * r / (pens[pen_index].viewBox / 2), SCALE_FACTOR * r / (pens[pen_index].viewBox / 2))
+				context.translate(-pens[pen_index].viewBox / 2, -pens[pen_index].viewBox / 2)
+				context.fill(new Path2D(pens[pen_index].path))
+				context.restore()
 			} else {
+				var a = r * 4 // TODO: Figure out the reason why it's ~4, don't just magic number it
+				return '<use x="' + (-a / 2) + '" y="' + (-a / 2) + '" width="' + a + '" height="' + a + '" href="#' + pens[pen_index].name + '" transform="translate(' + (x-r) + ',' + (y-r) + ') rotate(' + Math.random() * 360 + ')"></use>'
 			}
 			break
 		default:
-			console.warn('Brush point type was not recognized.')
+			console.warn('Brush point type was not recognized:', shape)
 			break
 	}
 }
